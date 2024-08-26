@@ -1,5 +1,6 @@
 import {ref} from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router"
 
 export default function useLeads(){
     const leads = ref([]);
@@ -7,6 +8,7 @@ export default function useLeads(){
     const statuses = ref([]);
     const errors = ref({});
     const statusVisible = ref({});
+    const router = useRouter();
 
     const getLeads = async() => {
         const response = await axios.get("/api/v1/leads");
@@ -21,7 +23,7 @@ export default function useLeads(){
     const storeLead = async(data) =>{
         try{
             const response = await axios.post("/api/v1/leads/", data);
-            console.log(response); 
+            router.push("/"); 
         }catch(error){
             if(error.response.status === 422)
                 errors.value = error.response.data.errors;
@@ -32,7 +34,7 @@ export default function useLeads(){
         try{
             const update = await axios.put("/api/v1/leads/" + id, lead.value);
             statusVisible.value = update.data;
-            console.log(statusVisible.value);
+            router.push("/");
         }catch(error){
             if(error.response.status === 422)
                 errors.value = error.response.data.errors;
